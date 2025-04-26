@@ -32,20 +32,20 @@ def create_message(to, subject, message_text):
     raw = base64.urlsafe_b64encode(message.as_bytes())
     return {'raw': raw.decode()}
 
-def send_message(service, user_id, message):
-    sent_message = service.users().messages().send(userId=user_id, body=message).execute()
-    print(f"Message Id: {sent_message['id']}")
-    return sent_message
-
-if __name__ == '__main__':
+def send_mail(to, subject, body):
     service = authenticate_gmail()
-    to = "ranjithjs28@gmail.com"
-    subject = "Testing Gmail API"
-    body = "Hello, this is a test email sent using Gmail API!"
-    
+    user_id = "me"
     message = create_message(
         to=to, 
         subject=subject, 
         message_text=body
-    )
-    send_message(service, 'me', message)
+    )    
+    sent_message = service.users().messages().send(userId=user_id, body=message).execute()
+    print(f"Message Id: {sent_message['id']}")
+    return f"Successfully sent your mail to {to}"
+
+if __name__ == '__main__':
+    to = "ranjithjs28@gmail.com"
+    subject = "Testing Gmail API"
+    body = "Hello, this is a test email sent using Gmail API!"
+    send_mail(to, subject, body)
