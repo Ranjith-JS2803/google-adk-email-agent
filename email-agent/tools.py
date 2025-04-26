@@ -25,10 +25,9 @@ def authenticate_gmail():
     service = build('gmail', 'v1', credentials=creds)
     return service
 
-def create_message(to, subject, message_text, sender="ranjithjs28@gmail.com"):
+def create_message(to, subject, message_text):
     message = MIMEText(message_text)
     message['to'] = to
-    message['from'] = sender
     message['subject'] = subject
     raw = base64.urlsafe_b64encode(message.as_bytes())
     return {'raw': raw.decode()}
