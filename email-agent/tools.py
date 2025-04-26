@@ -33,16 +33,31 @@ def create_message(to, subject, message_text):
     return {'raw': raw.decode()}
 
 def send_mail(to, subject, body):
-    service = authenticate_gmail()
-    user_id = "me"
-    message = create_message(
-        to=to, 
-        subject=subject, 
-        message_text=body
-    )    
-    sent_message = service.users().messages().send(userId=user_id, body=message).execute()
-    print(f"Message Id: {sent_message['id']}")
-    return f"Successfully sent your mail to {to}"
+    """
+    Sends the mail to the recipient give the `to` email address, `subject` for the mail and `body` for the mail.
+
+    Args:
+        to (str): The recipient mail id (e.g., abcd@gmail.com).
+        subject (str): The subject for the mail.
+        body (str): The body for the mail.
+
+    Returns:
+        str: Success or Error message for the mail sent.
+    """
+    try:
+        service = authenticate_gmail()
+        user_id = "me"
+        message = create_message(
+            to=to, 
+            subject=subject, 
+            message_text=body
+        )
+        sent_message = service.users().messages().send(userId=user_id, body=message).execute()
+        print(f"Message Id: {sent_message['id']}")
+        return f"Successfully sent your mail to {to}"
+    except Exception as e:
+        print(f"Error sending the mail to {to}: {e}")
+        return f"Error sending the mail!!"
 
 if __name__ == '__main__':
     to = "ranjithjs28@gmail.com"
