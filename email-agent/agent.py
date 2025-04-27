@@ -1,52 +1,22 @@
+import yaml
+with open("config.yml", 'r') as file:
+    data = yaml.safe_load(file)
+
 import os
-from google.adk.agents import LlmAgent, SequentialAgent
-from . import prompts
-from .tools import send_mail
+os.environ["GOOGLE_API_KEY"] = data["GOOGLE_API_KEY"]
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyA-DptK9fSIw9VxxAxuCPKOUJTu6vc_PjI"
-MODEL = "gemini-2.5-pro-exp-03-25"
-
-draft_mail_subject_agent = LlmAgent(
-    model = MODEL,
-    name="draft_mail_subject_agent",
-    description = "A helpful agent to draft a mail subject.",
-    instruction = prompts.instruction_draft_mail_subject_agent,
-    output_key = "draft_subject"
-)
-
-draft_mail_body_agent = LlmAgent(
-    model = MODEL,
-    name="draft_mail_body_agent",
-    description = "A helpful agent to draft a mail body.",
-    instruction = prompts.instruction_draft_mail_body_agent,
-    output_key = "draft_body"
-)
-
-critic_agent = LlmAgent(
-    model = MODEL,
-    name = "critic_agent",
-    description = "A helpful agent to critique mail subject and body. Send the mail using the `send_mail` tool.",
-    instruction = prompts.instruction_critic_agent,
-)
-
-confirmation_agent = LlmAgent(
-    model = MODEL,
-    name = "confirmation_agent",
-    description = "A helpful agent to confirm the mail to be sent and Send the mail using the `send_mail` tool.",
-    instruction = prompts.instruction_confirmation_agent,
-    tools = [send_mail]
-)
+from google.adk.agents import LlmAgent
+from .sub_agents.draft_email_agent.agent import draft_email_agent
+from .sub_agents.confirmation_agent.agent import confirmation_agent
+from . import prompt
 
 email_agent = LlmAgent(
-    model = MODEL,
+    model = data["MODEL"],
     name = "email_agent",
-    description = "Writes a draft mail with subject and body then passes it to critic for further consideration.",
-    instruction = prompts.instruction_email_agent,
+    description = "Handles user interactions for drafting and sending an email.",
+    instruction = prompt.instruction_email_agent,
     sub_agents = [
-        draft_mail_subject_agent,
-        draft_mail_body_agent,
-        critic_agent,
-        confirmation_agent
+        draft_email_agent
     ],
 )
 

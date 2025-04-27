@@ -1,6 +1,5 @@
 import os
 import base64
-import json
 from email.mime.text import MIMEText
 
 from google.auth.transport.requests import Request
@@ -32,12 +31,12 @@ def create_message(to, subject, message_text):
     raw = base64.urlsafe_b64encode(message.as_bytes())
     return {'raw': raw.decode()}
 
-def send_mail(to, subject, body):
+def send_mail_(recipient_email:str, subject:str, body:str):
     """
     Sends the mail to the recipient give the `to` email address, `subject` for the mail and `body` for the mail.
 
     Args:
-        to (str): The recipient mail id (e.g., abcd@gmail.com).
+        recipient_email (str): The recipient mail id (e.g., abcd@gmail.com).
         subject (str): The subject for the mail.
         body (str): The body for the mail.
 
@@ -48,19 +47,29 @@ def send_mail(to, subject, body):
         service = authenticate_gmail()
         user_id = "me"
         message = create_message(
-            to=to, 
+            to=recipient_email, 
             subject=subject, 
             message_text=body
         )
         sent_message = service.users().messages().send(userId=user_id, body=message).execute()
         print(f"Message Id: {sent_message['id']}")
-        return f"Successfully sent your mail to {to}"
+        return f"Successfully sent your mail to {recipient_email}"
     except Exception as e:
-        print(f"Error sending the mail to {to}: {e}")
+        print(f"Error sending the mail to {recipient_email}: {e}")
         return f"Error sending the mail!!"
 
-if __name__ == '__main__':
-    to = "ranjithjs28@gmail.com"
-    subject = "Testing Gmail API"
-    body = "Hello, this is a test email sent using Gmail API!"
-    send_mail(to, subject, body)
+def send_mail(state: dict):
+    """
+    Sends the mail to the recipient give the `to` email address, `subject` for the mail and `body` for the mail.
+
+    Args:
+        state (dict): The state shared by the agent
+    Returns:
+        str: Success or Error message for the mail sent.
+    """
+    
+    recipient_email = state.get("recipient_email_id")
+    subject = state.get("draft_subject")
+    body = state.get("draft_body")
+    
+    return send_mail_(recipient_email, subject, body)
