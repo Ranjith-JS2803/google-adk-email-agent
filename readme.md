@@ -13,12 +13,12 @@ parent-dir/
 - **email-agent/**: Contains all the project source code.
 - **config.yml**: Configuration file with model and API credentials.
   - Example YAML format:
-    ```yaml
-    MODEL: "<your-model-name>"
-    GOOGLE-API-KEY: "<your-google-api-key>"
-    ```
+```yaml
+MODEL: "<your-model-name>"
+GOOGLE-API-KEY: "<your-google-api-key>"
+```
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
 1. **Install Dependencies**:
 
