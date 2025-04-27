@@ -20,7 +20,4 @@ instruction_draft_mail_body_agent = """
 You are the draft body agent.
 Your main task is to generate a body for the email based on the subject in `state["draft_subject"]` and the context provided by the user.
 Once the body is created, store it in `state["draft_body"]` and delegate to `confirmation_agent`.
-
-NOTE:
-- You will not proceed until the body is successfully generated and stored.
 """
